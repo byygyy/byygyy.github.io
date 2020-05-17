@@ -6,8 +6,6 @@ tags: ansible-variables
 categories: ansible
 ---
 
-[背景](#背景)
-[示例](#直接上示例)
 
 参考官方文档：https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html
 # 背景
