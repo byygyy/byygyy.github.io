@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  <title>Linux之为什么还要学习它 | 运维时刻</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="最近每天都会发一篇Linux原创文章，其实可能有些网友会不太喜欢纯技术的文章，或者太基础的文章​。我今天就想讲讲，为什么自动化运维工具和技术很多了，还要​学好Linux。">
+<meta name="keywords" content="shell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux之为什么还要学习它">
+<meta property="og:url" content="/2020/03/05/linux/linux-why-learn/index.html">
+<meta property="og:site_name" content="运维时刻">
+<meta property="og:description" content="最近每天都会发一篇Linux原创文章，其实可能有些网友会不太喜欢纯技术的文章，或者太基础的文章​。我今天就想讲讲，为什么自动化运维工具和技术很多了，还要​学好Linux。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-07T16:18:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux之为什么还要学习它">
+<meta name="twitter:description" content="最近每天都会发一篇Linux原创文章，其实可能有些网友会不太喜欢纯技术的文章，或者太基础的文章​。我今天就想讲讲，为什么自动化运维工具和技术很多了，还要​学好Linux。">
+  
+    <link rel="alternate" href="/atom.xml" title="运维时刻" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">运维时刻</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">时刻准备着救火</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories/linux">Linux</a>
+        
+          <a class="main-nav-link" href="/categories/ansible">Ansible</a>
+        
+          <a class="main-nav-link" href="/categories/python">Python</a>
+        
+          <a class="main-nav-link" href="/categories/network">Network</a>
+        
+          <a class="main-nav-link" href="/categories/tools">Tools</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value=""></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-linux/linux-why-learn" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/03/05/linux/linux-why-learn/" class="article-date">
+  <time class="dt-published" datetime="2020-03-05T23:08:08.000Z" itemprop="datePublished">2020-03-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Linux之为什么还要学习它
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>最近每天都会发一篇Linux原创文章，其实可能有些网友会不太喜欢纯技术的文章，或者太基础的文章​。我今天就想讲讲，为什么自动化运维工具和技术很多了，还要​学好Linux。<br><a id="more"></a></p>
+<p>回想201x年，我们还在前线做一线和二线运维，每天水深火热的日子回想起来还挺充实的。​某一天，我们收到版本发布公告，应用系统准备从windows迁移到Linux，当时我和小伙伴的心情一下子都不好了。​我就心里想，java程序嘛，在哪个操作系统运行都可以，为什么要用大家都不太熟悉的操作系统。本来我就不喜欢死记硬背，想到linux的各种命令就头疼。​项目组技术总监给大家都发了一个Linux 学习教程pdf版。​大家就抽空开始学习，其实我是最不喜欢看那个pdf的。​接着，我们很快就收到了10台左右的linux系统账号和密码，着手准备系统的迁移，按照统一下发的手册，逐个安装java并对操作系统进行一些配置的修改，让他跑起来就可以了。​我们当时基本还是把linux当windows用的，用FTP把文件传到服务器目录，在FTP上修改文件权限，修改文件内容，然后就直接提交上去了。​现在想想，当时的玩法太low了，Linux作者知道我们这样玩，估计要气死了，哈哈！​现在看来，当时的那些迁移一个ansible roles，弄几个task就搞定了。​至于每次的部署，jenkins+ansible tower/ansible core, 很快就搞定，只是第一次编写脚本需要麻烦点，编写、修改、调优估计花的时间已经够手动部署好几次了。</p>
+<p>也许会有人问，你这个自动化用的是ansible，关linux什么事​？ 首先，我们用ansible脚本，最终执行的目标是linux系统，如果不熟悉linux，ansible报个什么OS相关的错误，我们就蒙了；第二，ansible虽然自带了好多的模块，例如文件拷贝、文件下载、文件修改、服务启动等等，但是总会有一些ansible不支持，这个时候只能利用使用杀手锏，就是使用ansible的shell模块，相当于直接通过ansible调用linux系统的shell脚本，例如项目内部自己编写的微服务，​要不把它注册成OS的服务，要么就通过sh文件调用；第三，对于同一个场景，通过ansible实现就有多种方式，我们想选择最优的，就要熟悉被操作的对象Linux的好多特性，例如linux权限机制、安全机制、文件管理​机制等。</p>
+<p>对于我们运维人员来说，可能已经接触到了容器技术Docker，他就是在OS上在虚拟出一个轻量级的OS，他跟宿主系统共享同一套硬件资源，在某些情况下可能需要跟宿主机做磁盘映射等操作，甚至Doker内部好多命令的玩法跟Linux很像。Docker要占用宿主Linux系统的资源，想对docker资源占用熟悉，也要熟悉Linux系统CPU、​内存、IO的运行原理。我们想驾驭好容器，就要先学好Linux。听过大数据的伙伴也知道，大数据的解决方案几乎清一色都是基于Linux系统的。</p>
+<p>学习过Linux的同学们都知道，Linux shell是一个比python、java语法​复杂好多的一种脚本语言，直接跟操作系统通信。他复杂但是也很强大，任何的Linux系统的配置修改，​通过他都可以实现自动化。还有，linux的好多shell脚本玩法，跟C很像，​精通Linux也会帮助我们精通C语言。如果玩好Linux的grep、awk、sed、ps等shel命令，结合ansible你会实现更多的自动化​功能，例如进程管理​、资源管理、快速的故障定位等等。其实，Linux也是一个很完美的开源产品，他的设计哲学也会提升我们对软件设计​、开发和测试的一些理念。例如，多进程技术、多线程技术、锁和并发的​概念等。</p>
+<p>虽然本人在现在的工作中，尽量避免复杂的linxu命令，但是时不时要快速完成一个任务，但又不想为鸡毛蒜皮并且一次性的事情编写ansible脚本，​直接几条shell命令搞定。可以省点时间去听音乐​看美女也挺好的，真俗! 你如果学好了linux，​估计会有更多的感触。​</p>
+
+      
+      
+        <div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <br>
+            <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+            <span class="donate_txt">
+                <br>
+                如果喜欢我，可以请我喝咖啡哟!  也可以关注我的微信订阅号devops186
+            </span>
+    </div>  
+    <div id="donate_guide" class="donate_bar left hidden" >
+        <br>
+        <img src="/images/webchat.png" alt="微信打赏" height="100px" />
+        <!-- <img src="/images/alipay.png" alt="支付宝打赏" height="100px" /> -->
+    </div>
+    
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function() {
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+        function donate_on_web(){
+            $('#donate').submit();
+        }
+        var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                    original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+        }
+    </script>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="/2020/03/05/linux/linux-why-learn/" data-id="ck9mxdes5002s0en7c12yxsac" data-title="Linux之为什么还要学习它" class="article-share-link">Share</a>
+      
+      
+        <a href="/2020/03/05/linux/linux-why-learn/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/2020/03/05/linux/linux-why-learn/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/03/06/linux/linux_shel_under/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Linux之理解shell
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/03/04/linux/linux-sed/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Linux文本编辑命令-sed</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+  <section id="comments" class="vcomment">
+
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dev-ops/">dev-ops</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jenkins/">jenkins</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">other</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible/">ansible</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-error/">ansible-error</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-help/">ansible-help</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-learn/">ansible-learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-module/">ansible-module</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-playbook/">ansible-playbook</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-roles/">ansible-roles</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-template/">ansible-template</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-variables/">ansible-variables</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ci/">ci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloud/">cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dcoker/">dcoker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/delegate-to/">delegate_to</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/file/">file</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/https/">https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/include-vars/">include_vars</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/internet/">internet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipv6/">ipv6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/monitor/">monitor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nas/">nas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nat/">nat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/">other</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pip/">pip</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pipeline/">pipeline</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/podman/">podman</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/progress/">progress</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/standard/">standard</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ansible/" style="font-size: 16px;">ansible</a> <a href="/tags/ansible-error/" style="font-size: 10px;">ansible-error</a> <a href="/tags/ansible-help/" style="font-size: 10px;">ansible-help</a> <a href="/tags/ansible-learn/" style="font-size: 10px;">ansible-learn</a> <a href="/tags/ansible-module/" style="font-size: 18px;">ansible-module</a> <a href="/tags/ansible-playbook/" style="font-size: 12px;">ansible-playbook</a> <a href="/tags/ansible-roles/" style="font-size: 10px;">ansible-roles</a> <a href="/tags/ansible-template/" style="font-size: 10px;">ansible-template</a> <a href="/tags/ansible-variables/" style="font-size: 10px;">ansible-variables</a> <a href="/tags/ci/" style="font-size: 10px;">ci</a> <a href="/tags/cloud/" style="font-size: 10px;">cloud</a> <a href="/tags/dcoker/" style="font-size: 10px;">dcoker</a> <a href="/tags/delegate-to/" style="font-size: 10px;">delegate_to</a> <a href="/tags/file/" style="font-size: 12px;">file</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/include-vars/" style="font-size: 10px;">include_vars</a> <a href="/tags/internet/" style="font-size: 10px;">internet</a> <a href="/tags/ipv6/" style="font-size: 10px;">ipv6</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/learn/" style="font-size: 10px;">learn</a> <a href="/tags/linux/" style="font-size: 14px;">linux</a> <a href="/tags/monitor/" style="font-size: 10px;">monitor</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nas/" style="font-size: 10px;">nas</a> <a href="/tags/nat/" style="font-size: 10px;">nat</a> <a href="/tags/other/" style="font-size: 14px;">other</a> <a href="/tags/pip/" style="font-size: 10px;">pip</a> <a href="/tags/pipeline/" style="font-size: 10px;">pipeline</a> <a href="/tags/podman/" style="font-size: 10px;">podman</a> <a href="/tags/progress/" style="font-size: 10px;">progress</a> <a href="/tags/shell/" style="font-size: 20px;">shell</a> <a href="/tags/standard/" style="font-size: 10px;">standard</a> <a href="/tags/tools/" style="font-size: 12px;">tools</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2099/04/">April 2099</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2099/04/24/technology_website/">常用技术网站推荐</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/23/docker/podman-namaspace-error/">CentOS8使用podman常见错误解决</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/19/ansible/ansible_loop/">asible之-玩转各种循环</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/05/jenkins/jenkins_base/">jenkins之-pipeline基础知识</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/01/jenkins/jenkins_hello_world/">jenkins之-创建第一个pipeline</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 李欢欢(Robin H H Li)<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+      <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_828341'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/stat.php%3Fid%3D828341%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories/linux" class="mobile-nav-link">Linux</a>
+  
+    <a href="/categories/ansible" class="mobile-nav-link">Ansible</a>
+  
+    <a href="/categories/python" class="mobile-nav-link">Python</a>
+  
+    <a href="/categories/network" class="mobile-nav-link">Network</a>
+  
+    <a href="/categories/tools" class="mobile-nav-link">Tools</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = 'false' == true;
+    var verify = 'false' == true;
+    new Valine({
+        el: '.vcomment',
+        notify: notify,
+        verify: verify,
+        appId: "p2FrmVMxcfWemqnNtET5iplC-gzGzoHsz",
+        appKey: "95bACKJlEpr1YLgRGMeRKVIt",
+        placeholder: "Just go go",
+        pageSize:'10',
+        avatar:'mm',
+        lang:'zh-cn'
+    });
+</script>
+
+  </div>
+</body>
+</html>

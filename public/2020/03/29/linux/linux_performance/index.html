@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  <title>Linux之系统性能优化 | 运维时刻</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="如果你是操作系统管理员、中间件管理员、数据库管理员或者开发人员，肯定有机会遇到系统运行缓慢相关的问题。">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux之系统性能优化">
+<meta property="og:url" content="/2020/03/29/linux/linux_performance/index.html">
+<meta property="og:site_name" content="运维时刻">
+<meta property="og:description" content="如果你是操作系统管理员、中间件管理员、数据库管理员或者开发人员，肯定有机会遇到系统运行缓慢相关的问题。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-07T16:18:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux之系统性能优化">
+<meta name="twitter:description" content="如果你是操作系统管理员、中间件管理员、数据库管理员或者开发人员，肯定有机会遇到系统运行缓慢相关的问题。">
+  
+    <link rel="alternate" href="/atom.xml" title="运维时刻" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">运维时刻</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">时刻准备着救火</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories/linux">Linux</a>
+        
+          <a class="main-nav-link" href="/categories/ansible">Ansible</a>
+        
+          <a class="main-nav-link" href="/categories/python">Python</a>
+        
+          <a class="main-nav-link" href="/categories/network">Network</a>
+        
+          <a class="main-nav-link" href="/categories/tools">Tools</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value=""></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-linux/linux_performance" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/03/29/linux/linux_performance/" class="article-date">
+  <time class="dt-published" datetime="2020-03-29T23:00:00.000Z" itemprop="datePublished">2020-03-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Linux之系统性能优化
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>如果你是操作系统管理员、中间件管理员、数据库管理员或者开发人员，肯定有机会遇到系统运行缓慢相关的问题。<br><a id="more"></a></p>
+<h1 id="1-内存使用率"><a href="#1-内存使用率" class="headerlink" title="1.内存使用率"></a>1.内存使用率</h1><h2 id="1-1-物理内存使用率高"><a href="#1-1-物理内存使用率高" class="headerlink" title="1.1 物理内存使用率高"></a>1.1 物理内存使用率高</h2><p>这个其实是好多linux初学者最开始遇到的问题，刚申请的服务器，还没跑程序就发现物理内存使用率很高，少则80%，90%，有些甚至接近100%。其实，我们是用windows的使用经验就判断linux，当面对物理内存使用率高的时候，才会恐慌。其实，只要物理内存可用不为0，swap几乎还没开始使用，就是安全的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Mem这一行代表物理内存的使用情况，看available就知道还有多少物理内存空闲。</span><br><span class="line">[robin@instance-2 ~]$ free -m</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:           3529         327        1420          80        1780        2863</span><br><span class="line">Swap:             0           0           0</span><br><span class="line">[robin@instance-2 ~]$ free -g</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:              3           0           1           0           1           2</span><br><span class="line">Swap:             0           0           0</span><br></pre></td></tr></table></figure></p>
+<h2 id="1-2-虚拟内存使用高"><a href="#1-2-虚拟内存使用高" class="headerlink" title="1.2 虚拟内存使用高"></a>1.2 虚拟内存使用高</h2><p>大家都知道，虚拟内存是使用硬盘作为内存的一种方式，性能想比较物理内存，差很多。所以当swap开始大于零的时候，就要去考虑增大内存，或者去查找程序本身的错误了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Swap这一行代表虚拟内存的使用情况，看used这个值，就知道已经使用了都少swap内存。</span><br><span class="line">[robin@instance-2 ~]$ free -m</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:           3529         327        1420          80        1780        2863</span><br><span class="line">Swap:             0           0           0</span><br><span class="line">[robin@instance-2 ~]$ free -g</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:              3           0           1           0           1           2</span><br><span class="line">Swap:             0           0           0</span><br></pre></td></tr></table></figure></p>
+<h2 id="1-3-找出消耗内存的元凶"><a href="#1-3-找出消耗内存的元凶" class="headerlink" title="1.3 找出消耗内存的元凶"></a>1.3 找出消耗内存的元凶</h2><p>当某一天你发现，LInux操作系统的内存严重不足，已经开始大量使用 Swap，甚至都用了多少G的Swap内存。</p>
+<h3 id="1-3-1-使用top查看物理内存占用"><a href="#1-3-1-使用top查看物理内存占用" class="headerlink" title="1.3.1 使用top查看物理内存占用"></a>1.3.1 使用top查看物理内存占用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">使用top命令，并且CTRL+M就会按照内存的使用率给进程排序。</span><br><span class="line">top - 00:10:46 up 8 days,  1:39,  2 users,  load average: 0.00, 0.01, 0.05</span><br><span class="line">Tasks: 162 total,   1 running, 161 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.1 us,  0.2 sy,  0.0 ni, 99.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :  3756148 total,  2305048 free,  1037268 used,   413832 buff/cache</span><br><span class="line">KiB Swap:  3932156 total,  3932156 free,        0 used.  2439208 avail Mem</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND</span><br><span class="line"> 4956 jenkins   20   0 4657416 783268  22980 S   0.3 20.9  29:19.30 java</span><br><span class="line"> 4796 mysql     20   0  978712  94268   7028 S   0.3  2.5  16:59.70 mysqld</span><br></pre></td></tr></table></figure>
+<h3 id="1-3-2-循环查询虚拟内存占用"><a href="#1-3-2-循环查询虚拟内存占用" class="headerlink" title="1.3.2 循环查询虚拟内存占用"></a>1.3.2 循环查询虚拟内存占用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">第一列为PID，第二列为这个进程占用的虚拟内存</span><br><span class="line">[root@localhost ~]# for i in $( cd /proc;ls |grep &quot;^[0-9]&quot;|awk &apos; $0 &gt;100&apos;) ;do awk &apos;/Swap:/&#123;a=a+$2&#125;END&#123;print &apos;&quot;$i&quot;&apos;,a/1024&quot;M&quot;&#125;&apos; /proc/$i/smaps 2&gt;/dev/null ; done | sort -k2nr | head -10</span><br><span class="line">112 0M</span><br><span class="line">1149 0M</span><br><span class="line">1155 0M</span><br><span class="line">1169 0M</span><br><span class="line">1172 0M</span><br><span class="line">1184 0M</span><br><span class="line">1187 0M</span><br><span class="line">1191 0M</span><br><span class="line">1198 0M</span><br><span class="line">1210 0M</span><br></pre></td></tr></table></figure>
+<h1 id="2-CPU使用率"><a href="#2-CPU使用率" class="headerlink" title="2.CPU使用率"></a>2.CPU使用率</h1><p>其实，总结来讲判断目前的CPU运算时间够不够用，主要看内存的使用率和系统负载，只要系统负载不高，一般都很安全。</p>
+<h2 id="2-1-CPU使用率高但负载低"><a href="#2-1-CPU使用率高但负载低" class="headerlink" title="2.1 CPU使用率高但负载低"></a>2.1 CPU使用率高但负载低</h2><p>这种情况说明，目前CPU资源较为紧张，但是不是性能的瓶颈，CPU基本满足要求。我们一般看负载，只要负载是CPU核心数的0.75倍，就很安全。第一行的load average: 0.00, 0.01, 0.05就代表最近5分钟、10分钟、15分钟的平均负载，第三行的%Cpu(s)代表整体的CPU使用率。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">使用top的时候，默认情况下，看到第三行的CPU使用率，那是一个整体的CPU使用率。</span><br><span class="line">top - 00:17:55 up 8 days,  1:46,  2 users,  load average: 0.00, 0.01, 0.05</span><br><span class="line">Tasks: 161 total,   1 running, 160 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.2 us,  0.2 sy,  0.0 ni, 99.6 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :  3756148 total,  2304972 free,  1037344 used,   413832 buff/cache</span><br><span class="line">KiB Swap:  3932156 total,  3932156 free,        0 used.  2439132 avail Mem</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND</span><br><span class="line">25965 root      20   0  162024   2380   1600 R   1.7  0.1   0:01.42 top</span><br><span class="line"> 5302 robin     20   0  149972   2128   1600 S   0.8  0.1  12:36.84 ping</span><br><span class="line"></span><br><span class="line">使用top的时候，如果还想查看单个CPU的使用情况，输入1就可以了。</span><br><span class="line">top - 00:19:22 up 8 days,  1:48,  2 users,  load average: 0.17, 0.06, 0.06</span><br><span class="line">Tasks: 162 total,   1 running, 161 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu0  :  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu1  :  0.0 us,  1.5 sy,  0.0 ni, 98.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu2  :  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu3  :  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :  3756148 total,  2304932 free,  1037384 used,   413832 buff/cache</span><br><span class="line">KiB Swap:  3932156 total,  3932156 free,        0 used.  2439092 avail Mem</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND</span><br><span class="line">25967 root      20   0  162024   2380   1600 R   1.5  0.1   0:00.03 top</span><br><span class="line">    1 root      20   0  190976   3988   2620 S   0.0  0.1   1:11.02 systemd</span><br><span class="line">    2 root      20   0       0      0      0 S   0.0  0.0   0:00.19 kthreadd</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-2-CPU使用率高负载也高"><a href="#2-2-CPU使用率高负载也高" class="headerlink" title="2.2 CPU使用率高负载也高"></a>2.2 CPU使用率高负载也高</h2><p>这种情况说明，目前CPU资源紧张，而且已经造成了系统缓慢，一般负载大于CPU核心数的0.75倍，我们就认为负载也高了。这个时候，就要查查CPU都是被谁占用了，而且可能还伴随着IO或者其他访问的问题。</p>
+<h1 id="3-系统负载高"><a href="#3-系统负载高" class="headerlink" title="3.系统负载高"></a>3.系统负载高</h1><p>系统负载的概念，在Linux系统管理方面非常实用，通过平均负载值就可以快速判断当前系统的安全状况。</p>
+<h2 id="3-1-使用uptime查看负载"><a href="#3-1-使用uptime查看负载" class="headerlink" title="3.1 使用uptime查看负载"></a>3.1 使用uptime查看负载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">其实，uptime不仅能查看系统开机多久了，而且也能查看系统在5min 10min 15min的平均负载情况。</span><br><span class="line">[root@localhost ~]# uptime</span><br><span class="line"> 00:23:41 up 8 days,  1:52,  2 users,  load average: 0.00, 0.03, 0.05</span><br><span class="line">[root@localhost ~]#</span><br></pre></td></tr></table></figure>
+<h2 id="3-2-使用top查看负载"><a href="#3-2-使用top查看负载" class="headerlink" title="3.2 使用top查看负载"></a>3.2 使用top查看负载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">top是我认为的linux系统最好的性能优化命令或者工具，第一行load average: 0.00, 0.02, 0.05就是值最近5min 10min 15min的平均负载。</span><br><span class="line">[root@localhost ~]# top</span><br><span class="line">top - 00:24:38 up 8 days,  1:53,  2 users,  load average: 0.00, 0.02, 0.05</span><br><span class="line">Tasks: 162 total,   1 running, 161 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  1.4 us,  2.9 sy,  0.0 ni, 95.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :  3756148 total,  2304984 free,  1037212 used,   413952 buff/cache</span><br><span class="line">KiB Swap:  3932156 total,  3932156 free,        0 used.  2439168 avail Mem</span><br></pre></td></tr></table></figure>
+<h2 id="3-3-定位负载高的原因"><a href="#3-3-定位负载高的原因" class="headerlink" title="3.3 定位负载高的原因"></a>3.3 定位负载高的原因</h2><p>先使用top命令查看整体的负载情况。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">top - 00:13:53 up 12 min,  2 users,  load average: 0.00, 0.11, 0.13</span><br><span class="line">Tasks: 170 total,   1 running, 169 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu0  :  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu1  :  0.0 us,  0.3 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu2  :  0.0 us,  0.3 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu3  :  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :  3756132 total,  1771392 free,  1026936 used,   957804 buff/cache</span><br><span class="line">KiB Swap:  3932156 total,  3932156 free,        0 used.  2467352 avail Mem</span><br></pre></td></tr></table></figure></p>
+<p>第一行的load average后面的三个数值分别代表最近1分钟、5分钟、15分钟的负载数据。<br>第二行显示不同类型的task，其中zombie也就是传说的僵尸进程，如果存在可能会严重影响整体性能。<br>第三行到第6行，显示每个cpu的使用情况，us代表用户占用CPU百分比，sy代表内核占用CPU百分比，id代表空闲CPU百分比，wa代表IO等待占用的CPU百分比，wa如果超过了30要高度注意了，可能瓶颈在磁盘I/O</p>
+<p>再用vmstat命令查看更加全面的性能指标。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# vmstat 3</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 0  0      0 1771872   2132 955968    0    0    68    84   81  119  2  0 98  0  0</span><br></pre></td></tr></table></figure></p>
+<p>r表示运行队列(就是说多少个进程真的分配到CPU)，一般不能超过CPU数量。<br>b表示堵塞的进程数量，只要大于0了，就会影响性能。<br>swpd 表示虚拟内存已使用的大小，如果大于0，表示你的机器物理内存不足了。<br>free表示物理内存还有多少空闲。<br>cache直接用来记忆我们打开的文件，给文件做缓冲。<br>si代表每秒从磁盘读入虚拟内存的大小，只要大于0就说明内存不足了。<br>so代表每秒虚拟内存写入磁盘的大小，只要大于0就说明内存不足了。<br>bi/bo代表块设备每秒接收和发送的块数据。<br>in 代表每秒CPU的中断次数，包括时间中断。<br>cs 每秒上下文切换次数，例如我们调用系统函数，就要进行上下文切换，线程的切换，也要进程上下文切换，这个值要越小越好，太大了，要考虑调低线程或者进程的数目。系统调用也是，每次调用系统函数，我们的代码就会进入内核空间，导致上下文切换，这个是很耗资源，也要尽量避免频繁调用系统函数。上下文切换次数过多表示你的CPU大部分浪费在上下文切换，导致CPU干正经事的时间少了，CPU没有充分利用，是不可取的。<br>us 用户CPU时间，我曾经在一个做加密解密很频繁的服务器上，可以看到us接近100,r运行队列达到80(机器在做压力测试，性能表现不佳)。<br>sy 系统CPU时间，如果太高，表示系统调用时间长，例如是IO操作频繁。<br>id  空闲 CPU时间。<br>wt 等待IO CPU时间，一般来说，id + us + sy+ wa = 100。</p>
+
+      
+      
+        <div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <br>
+            <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+            <span class="donate_txt">
+                <br>
+                如果喜欢我，可以请我喝咖啡哟!  也可以关注我的微信订阅号devops186
+            </span>
+    </div>  
+    <div id="donate_guide" class="donate_bar left hidden" >
+        <br>
+        <img src="/images/webchat.png" alt="微信打赏" height="100px" />
+        <!-- <img src="/images/alipay.png" alt="支付宝打赏" height="100px" /> -->
+    </div>
+    
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function() {
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+        function donate_on_web(){
+            $('#donate').submit();
+        }
+        var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                    original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+        }
+    </script>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="/2020/03/29/linux/linux_performance/" data-id="ck9mxdet0003o0en7d23fo85s" data-title="Linux之系统性能优化" class="article-share-link">Share</a>
+      
+      
+        <a href="/2020/03/29/linux/linux_performance/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/2020/03/29/linux/linux_performance/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/01/jenkins/jenkins_hello_world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          jenkins之-创建第一个pipeline
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/03/24/linux/linux_program/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Linux之程序管理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+  <section id="comments" class="vcomment">
+
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dev-ops/">dev-ops</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jenkins/">jenkins</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">other</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible/">ansible</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-error/">ansible-error</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-help/">ansible-help</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-learn/">ansible-learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-module/">ansible-module</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-playbook/">ansible-playbook</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-roles/">ansible-roles</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-template/">ansible-template</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-variables/">ansible-variables</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ci/">ci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloud/">cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dcoker/">dcoker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/delegate-to/">delegate_to</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/file/">file</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/https/">https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/include-vars/">include_vars</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/internet/">internet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipv6/">ipv6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/monitor/">monitor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nas/">nas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nat/">nat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/">other</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pip/">pip</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pipeline/">pipeline</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/podman/">podman</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/progress/">progress</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/standard/">standard</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ansible/" style="font-size: 16px;">ansible</a> <a href="/tags/ansible-error/" style="font-size: 10px;">ansible-error</a> <a href="/tags/ansible-help/" style="font-size: 10px;">ansible-help</a> <a href="/tags/ansible-learn/" style="font-size: 10px;">ansible-learn</a> <a href="/tags/ansible-module/" style="font-size: 18px;">ansible-module</a> <a href="/tags/ansible-playbook/" style="font-size: 12px;">ansible-playbook</a> <a href="/tags/ansible-roles/" style="font-size: 10px;">ansible-roles</a> <a href="/tags/ansible-template/" style="font-size: 10px;">ansible-template</a> <a href="/tags/ansible-variables/" style="font-size: 10px;">ansible-variables</a> <a href="/tags/ci/" style="font-size: 10px;">ci</a> <a href="/tags/cloud/" style="font-size: 10px;">cloud</a> <a href="/tags/dcoker/" style="font-size: 10px;">dcoker</a> <a href="/tags/delegate-to/" style="font-size: 10px;">delegate_to</a> <a href="/tags/file/" style="font-size: 12px;">file</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/include-vars/" style="font-size: 10px;">include_vars</a> <a href="/tags/internet/" style="font-size: 10px;">internet</a> <a href="/tags/ipv6/" style="font-size: 10px;">ipv6</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/learn/" style="font-size: 10px;">learn</a> <a href="/tags/linux/" style="font-size: 14px;">linux</a> <a href="/tags/monitor/" style="font-size: 10px;">monitor</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nas/" style="font-size: 10px;">nas</a> <a href="/tags/nat/" style="font-size: 10px;">nat</a> <a href="/tags/other/" style="font-size: 14px;">other</a> <a href="/tags/pip/" style="font-size: 10px;">pip</a> <a href="/tags/pipeline/" style="font-size: 10px;">pipeline</a> <a href="/tags/podman/" style="font-size: 10px;">podman</a> <a href="/tags/progress/" style="font-size: 10px;">progress</a> <a href="/tags/shell/" style="font-size: 20px;">shell</a> <a href="/tags/standard/" style="font-size: 10px;">standard</a> <a href="/tags/tools/" style="font-size: 12px;">tools</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2099/04/">April 2099</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2099/04/24/technology_website/">常用技术网站推荐</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/23/docker/podman-namaspace-error/">CentOS8使用podman常见错误解决</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/19/ansible/ansible_loop/">asible之-玩转各种循环</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/05/jenkins/jenkins_base/">jenkins之-pipeline基础知识</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/01/jenkins/jenkins_hello_world/">jenkins之-创建第一个pipeline</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 李欢欢(Robin H H Li)<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+      <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_828341'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/stat.php%3Fid%3D828341%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories/linux" class="mobile-nav-link">Linux</a>
+  
+    <a href="/categories/ansible" class="mobile-nav-link">Ansible</a>
+  
+    <a href="/categories/python" class="mobile-nav-link">Python</a>
+  
+    <a href="/categories/network" class="mobile-nav-link">Network</a>
+  
+    <a href="/categories/tools" class="mobile-nav-link">Tools</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = 'false' == true;
+    var verify = 'false' == true;
+    new Valine({
+        el: '.vcomment',
+        notify: notify,
+        verify: verify,
+        appId: "p2FrmVMxcfWemqnNtET5iplC-gzGzoHsz",
+        appKey: "95bACKJlEpr1YLgRGMeRKVIt",
+        placeholder: "Just go go",
+        pageSize:'10',
+        avatar:'mm',
+        lang:'zh-cn'
+    });
+</script>
+
+  </div>
+</body>
+</html>

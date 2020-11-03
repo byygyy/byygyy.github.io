@@ -1,37 +1,19 @@
-## Welcome to GitHub Pages
+#### 项目维护说明
+该项目2020年2月29日后停止在gitlab维护，开始在github维护，博客维护流程如下：
 
-You can use the [editor on GitHub](https://github.com/byygyy/byygyy.github.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+1.在source/_posts/新建一个md文件
+2.登陆服务器并cd到项目根目录opstime.github.io
+3.执行update.sh
+4.不要修改根目录下_config.yml文件的git配置，否则会影响项目的运行。
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+#### 项目迁移流程
+该项目最初是运行在gitlab上的，后来迁移到了github，只是没有将hexo deploy 跟github pages关联。利用hexo deploy生成的public目录，将该目录发布到nginx后，用户就可以通过ngxin访问该博客， 速度超快。博客迁移流程如下：
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/byygyy/byygyy.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+1.在一个新服务器上完整安装hexo
+2.git clone 该项目到服务器本地
+3.在项目根目录只执行一次
+  - npm install hexo-cli -g
+  - npm install
+  - hexo g
+4.安装nginx并将web目录指向当前项目的public目录
+5.迁移后常态维护流程请看“博客维护说明”

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  <title>asible之-玩转各种循环 | 运维时刻</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="使用过ansible的同学都知道，在某些场景下，你不得不去使用循环语句，今天我来总结下ansible循环的各种玩法，并结合实例去理解。">
+<meta name="keywords" content="ansible">
+<meta property="og:type" content="article">
+<meta property="og:title" content="asible之-玩转各种循环">
+<meta property="og:url" content="/2020/04/19/ansible/ansible_loop/index.html">
+<meta property="og:site_name" content="运维时刻">
+<meta property="og:description" content="使用过ansible的同学都知道，在某些场景下，你不得不去使用循环语句，今天我来总结下ansible循环的各种玩法，并结合实例去理解。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-19T14:13:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="asible之-玩转各种循环">
+<meta name="twitter:description" content="使用过ansible的同学都知道，在某些场景下，你不得不去使用循环语句，今天我来总结下ansible循环的各种玩法，并结合实例去理解。">
+  
+    <link rel="alternate" href="/atom.xml" title="运维时刻" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">运维时刻</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">时刻准备着救火</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories/linux">Linux</a>
+        
+          <a class="main-nav-link" href="/categories/ansible">Ansible</a>
+        
+          <a class="main-nav-link" href="/categories/python">Python</a>
+        
+          <a class="main-nav-link" href="/categories/network">Network</a>
+        
+          <a class="main-nav-link" href="/categories/tools">Tools</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value=""></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ansible/ansible_loop" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/04/19/ansible/ansible_loop/" class="article-date">
+  <time class="dt-published" datetime="2020-04-19T22:20:30.000Z" itemprop="datePublished">2020-04-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ansible/">ansible</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      asible之-玩转各种循环
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>使用过ansible的同学都知道，在某些场景下，你不得不去使用循环语句，今天我来总结下ansible循环的各种玩法，并结合实例去理解。<br><a id="more"></a></p>
+<h1 id="1-with-items的使用"><a href="#1-with-items的使用" class="headerlink" title="1.with_items的使用"></a>1.with_items的使用</h1><p>这个应该是大家最常见的ansible循环语句，主要作用是对列表元素进行循环，输入的参数类型为列表。<br>第一种方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- name: get the instance name</span><br><span class="line">  shell: &quot;echo &#123;&#123; item &#125;&#125;&quot;</span><br><span class="line">  with_items:</span><br><span class="line">     - instance1</span><br><span class="line">     - instance2</span><br></pre></td></tr></table></figure></p>
+<p><em>将实例名传入shell语句中使用，这里传入的是yaml格式的列表数据。</em></p>
+<p>第二种方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- name: get the instance name 2st way</span><br><span class="line">  shell: &quot;echo &#123;&#123; item &#125;&#125;&quot;</span><br><span class="line">  with_items: [&quot;instance1&quot;,&quot;instance2&quot;]</span><br></pre></td></tr></table></figure></p>
+<p><em>将实例名传入shell语句中使用，这里传入的是json格式的列表数据。</em></p>
+<p>第三种方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vars:</span><br><span class="line">   instances: [&quot;instance1&quot;,&quot;instance2&quot;]</span><br><span class="line">   </span><br><span class="line">- name: get the instance name 3st way</span><br><span class="line">  shell: &quot;echo &#123;&#123; item &#125;&#125;&quot;</span><br><span class="line">  with_items: &quot;&#123;&#123; instances &#125;&#125;&quot;</span><br><span class="line">  register: instances3</span><br></pre></td></tr></table></figure></p>
+<p><code>ansible-playbook test-loop.yml -e &quot;hosts_group=vagrant1 instances=[\&quot;instance3\&quot;,\&quot;instance4\&quot;]&quot;</code><br><em>将实例名传入shell语句中使用，这里传入的是一个列表变量，这个列表变量的值可以被覆盖。</em></p>
+<h1 id="2-with-list的使用"><a href="#2-with-list的使用" class="headerlink" title="2.with_list的使用"></a>2.with_list的使用</h1><p>当列表没有嵌套式，with_item 与 with_list 效果完全一样。但是当有列表嵌套时，with_list不会展开每个子list的元素，而with_item会展开每个子list的元组，至于list的定义和传参，这里就不重复讲解了。<br>使用with_list遍历嵌套list的示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">- debug:</span><br><span class="line">    msg: &quot;&#123;&#123; item &#125;&#125;&quot;</span><br><span class="line">  with_list:</span><br><span class="line">    - [instance1,instance3]</span><br><span class="line">    - [instance2,instance4]</span><br><span class="line"></span><br><span class="line">or</span><br><span class="line"></span><br><span class="line">- debug:</span><br><span class="line">    msg: &quot;&#123;&#123; item &#125;&#125;&quot;</span><br><span class="line">  with_list:</span><br><span class="line">    - </span><br><span class="line">      - instance1</span><br><span class="line">      - instance3</span><br><span class="line">    - </span><br><span class="line">      - instance2</span><br><span class="line">      - instance4</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ok: [vagrant1] =&gt; (item=[u&apos;instance1&apos;, u&apos;instance3&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: [</span><br><span class="line">        &quot;instance1&quot;, </span><br><span class="line">        &quot;instance3&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=[u&apos;instance2&apos;, u&apos;instance4&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: [</span><br><span class="line">        &quot;instance2&quot;, </span><br><span class="line">        &quot;instance4&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用with_items遍历嵌套list的示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- debug:</span><br><span class="line">    msg: &quot;&#123;&#123; item &#125;&#125;&quot;</span><br><span class="line">  with_items:</span><br><span class="line">    - [instance1,instance3]</span><br><span class="line">    - [instance2,instance4]</span><br><span class="line"></span><br><span class="line">TASK [debug] ********************************************************************************************************************************************************************************</span><br><span class="line">ok: [vagrant1] =&gt; (item=instance1) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;instance1&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=instance3) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;instance3&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=instance2) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;instance2&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=instance4) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;instance4&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="3-with-lines的使用"><a href="#3-with-lines的使用" class="headerlink" title="3.with_lines的使用"></a>3.with_lines的使用</h1><p>有时候，可能想对某个shell命令执行的结果逐行遍历，最佳选择就是with_lines了。<br>例如，使用shell构造一个多行的文本，用于遍历。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- name: list a shell command result</span><br><span class="line">  debug:</span><br><span class="line">    msg: &quot;&#123;&#123; item &#125;&#125;&quot;</span><br><span class="line">  with_lines: &quot;echo -en &apos;hello\nworld&apos;&quot;</span><br><span class="line"></span><br><span class="line">TASK [list a shell command result] **********************************************************************************************************************************************************</span><br><span class="line">ok: [vagrant1] =&gt; (item=hello) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;hello&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=world) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;world&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>例如：ls / 查询跟目录的文件夹，并进行遍历。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">- name: list a shell command result2</span><br><span class="line">  debug:</span><br><span class="line">    msg: &quot;&#123;&#123; item &#125;&#125;&quot;</span><br><span class="line">  with_lines: &quot;ls /&quot;</span><br><span class="line">  </span><br><span class="line">TASK [list a shell command result2] *********************************************************************************************************************************</span><br><span class="line">ok: [vagrant1] =&gt; (item=appvol) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;appvol&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=bin) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;bin&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=boot) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;boot&quot;</span><br><span class="line">&#125;</span><br><span class="line">省略若干结果</span><br></pre></td></tr></table></figure></p>
+<h1 id="4-with-dict的使用"><a href="#4-with-dict的使用" class="headerlink" title="4.with_dict的使用"></a>4.with_dict的使用</h1><p>有时候我们需要遍历字典的每个项目，可以使用with_dict.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- name: list a dict 1st</span><br><span class="line">  debug:</span><br><span class="line">    msg: &quot;&#123;&#123; item.key &#125;&#125; &#123;&#123;item.value&#125;&#125;&quot;</span><br><span class="line">  with_dict: &#123;&apos;name&apos;:robin,&apos;age&apos;:22&#125;</span><br><span class="line"></span><br><span class="line">TASK [list a dict 1st] **********************************************************************************************************************************************************************</span><br><span class="line">ok: [vagrant1] =&gt; (item=&#123;&apos;value&apos;: 22, &apos;key&apos;: u&apos;age&apos;&#125;) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;age 22&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=&#123;&apos;value&apos;: u&apos;robin&apos;, &apos;key&apos;: u&apos;name&apos;&#125;) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;name robin&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="5-with-nested的使用"><a href="#5-with-nested的使用" class="headerlink" title="5.with_nested的使用"></a>5.with_nested的使用</h1><p>列表的循环嵌套可以使用with_nested, 虽然使用不是太多，但是总有用到的时候。看个简单的示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">- name: use with_nested exampl</span><br><span class="line">      debug:</span><br><span class="line">        msg: &quot;&#123;&#123; item &#125;&#125;&quot;</span><br><span class="line">      with_nested:</span><br><span class="line">        - [hello,world]</span><br><span class="line">        - [nihao,shijie]</span><br><span class="line"> </span><br><span class="line"> ok: [vagrant1] =&gt; (item=[u&apos;hello&apos;, u&apos;nihao&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: [</span><br><span class="line">        &quot;hello&quot;, </span><br><span class="line">        &quot;nihao&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=[u&apos;hello&apos;, u&apos;shijie&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: [</span><br><span class="line">        &quot;hello&quot;, </span><br><span class="line">        &quot;shijie&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=[u&apos;world&apos;, u&apos;nihao&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: [</span><br><span class="line">        &quot;world&quot;, </span><br><span class="line">        &quot;nihao&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=[u&apos;world&apos;, u&apos;shijie&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: [</span><br><span class="line">        &quot;world&quot;, </span><br><span class="line">        &quot;shijie&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="6-with-together的使用"><a href="#6-with-together的使用" class="headerlink" title="6.with_together的使用"></a>6.with_together的使用</h1><p>每次取列表的一个元素进行遍历，相当于按列遍历。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> - name: item.0 returns from the &apos;a&apos; list, item.1 returns from the &apos;1&apos; list</span><br><span class="line">   debug:</span><br><span class="line">     msg: &quot;&#123;&#123; item.0 &#125;&#125; and &#123;&#123; item.2 &#125;&#125;&quot;</span><br><span class="line">   with_together:</span><br><span class="line">    - [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;]</span><br><span class="line">    - [1, 2, 3, 4]</span><br><span class="line">    - [&apos;A&apos;,&apos;B&apos;,&apos;C&apos;,&apos;D&apos;]</span><br><span class="line"></span><br><span class="line">TASK [item.0 returns from the &apos;a&apos; list, item.1 returns from the &apos;1&apos; list] *******************************************************************************************************************</span><br><span class="line">ok: [vagrant1] =&gt; (item=[u&apos;a&apos;, 1, u&apos;A&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;a and A&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=[u&apos;b&apos;, 2, u&apos;B&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;b and B&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=[u&apos;c&apos;, 3, u&apos;C&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;c and C&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=[u&apos;d&apos;, 4, u&apos;D&apos;]) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;d and D&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="7-循环控制-设置变量名称"><a href="#7-循环控制-设置变量名称" class="headerlink" title="7.循环控制-设置变量名称"></a>7.循环控制-设置变量名称</h1><p>循环的时候，默认引用元组使用的是item，这个默认值在2.1以后可以修改了。这个功能在复杂循环中也许会很有用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">- name: list many dict</span><br><span class="line">  debug:</span><br><span class="line">    msg: &quot;&#123;&#123; user.name &#125;&#125;&quot;</span><br><span class="line">  with_items:</span><br><span class="line">    - &#123;&apos;name&apos;:robin&#125;</span><br><span class="line">    - &#123;&apos;name&apos;:lily&#125;</span><br><span class="line">    - &#123;&apos;name&apos;:gil&#125;</span><br><span class="line">  loop_control:</span><br><span class="line">    loop_var: user</span><br><span class="line"></span><br><span class="line">TASK [list many dict] ***********************************************************************************************************************************************************************</span><br><span class="line">ok: [vagrant1] =&gt; (item=&#123;u&apos;name&apos;: u&apos;robin&apos;&#125;) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;robin&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=&#123;u&apos;name&apos;: u&apos;lily&apos;&#125;) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;lily&quot;</span><br><span class="line">&#125;</span><br><span class="line">ok: [vagrant1] =&gt; (item=&#123;u&apos;name&apos;: u&apos;gil&apos;&#125;) =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;gil&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+      
+        <div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <br>
+            <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+            <span class="donate_txt">
+                <br>
+                如果喜欢我，可以请我喝咖啡哟!  也可以关注我的微信订阅号devops186
+            </span>
+    </div>  
+    <div id="donate_guide" class="donate_bar left hidden" >
+        <br>
+        <img src="/images/webchat.png" alt="微信打赏" height="100px" />
+        <!-- <img src="/images/alipay.png" alt="支付宝打赏" height="100px" /> -->
+    </div>
+    
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function() {
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+        function donate_on_web(){
+            $('#donate').submit();
+        }
+        var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                    original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+        }
+    </script>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="/2020/04/19/ansible/ansible_loop/" data-id="ck9mxdepx000w0en7xya2vtca" data-title="asible之-玩转各种循环" class="article-share-link">Share</a>
+      
+      
+        <a href="/2020/04/19/ansible/ansible_loop/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/2020/04/19/ansible/ansible_loop/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ansible/">ansible</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/23/docker/podman-namaspace-error/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          CentOS8使用podman常见错误解决
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/05/jenkins/jenkins_base/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">jenkins之-pipeline基础知识</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+  <section id="comments" class="vcomment">
+
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dev-ops/">dev-ops</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jenkins/">jenkins</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">other</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible/">ansible</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-error/">ansible-error</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-help/">ansible-help</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-learn/">ansible-learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-module/">ansible-module</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-playbook/">ansible-playbook</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-roles/">ansible-roles</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-template/">ansible-template</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-variables/">ansible-variables</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ci/">ci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloud/">cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dcoker/">dcoker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/delegate-to/">delegate_to</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/file/">file</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/https/">https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/include-vars/">include_vars</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/internet/">internet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipv6/">ipv6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/monitor/">monitor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nas/">nas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nat/">nat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/">other</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pip/">pip</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pipeline/">pipeline</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/podman/">podman</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/progress/">progress</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/standard/">standard</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ansible/" style="font-size: 16px;">ansible</a> <a href="/tags/ansible-error/" style="font-size: 10px;">ansible-error</a> <a href="/tags/ansible-help/" style="font-size: 10px;">ansible-help</a> <a href="/tags/ansible-learn/" style="font-size: 10px;">ansible-learn</a> <a href="/tags/ansible-module/" style="font-size: 18px;">ansible-module</a> <a href="/tags/ansible-playbook/" style="font-size: 12px;">ansible-playbook</a> <a href="/tags/ansible-roles/" style="font-size: 10px;">ansible-roles</a> <a href="/tags/ansible-template/" style="font-size: 10px;">ansible-template</a> <a href="/tags/ansible-variables/" style="font-size: 10px;">ansible-variables</a> <a href="/tags/ci/" style="font-size: 10px;">ci</a> <a href="/tags/cloud/" style="font-size: 10px;">cloud</a> <a href="/tags/dcoker/" style="font-size: 10px;">dcoker</a> <a href="/tags/delegate-to/" style="font-size: 10px;">delegate_to</a> <a href="/tags/file/" style="font-size: 12px;">file</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/include-vars/" style="font-size: 10px;">include_vars</a> <a href="/tags/internet/" style="font-size: 10px;">internet</a> <a href="/tags/ipv6/" style="font-size: 10px;">ipv6</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/learn/" style="font-size: 10px;">learn</a> <a href="/tags/linux/" style="font-size: 14px;">linux</a> <a href="/tags/monitor/" style="font-size: 10px;">monitor</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nas/" style="font-size: 10px;">nas</a> <a href="/tags/nat/" style="font-size: 10px;">nat</a> <a href="/tags/other/" style="font-size: 14px;">other</a> <a href="/tags/pip/" style="font-size: 10px;">pip</a> <a href="/tags/pipeline/" style="font-size: 10px;">pipeline</a> <a href="/tags/podman/" style="font-size: 10px;">podman</a> <a href="/tags/progress/" style="font-size: 10px;">progress</a> <a href="/tags/shell/" style="font-size: 20px;">shell</a> <a href="/tags/standard/" style="font-size: 10px;">standard</a> <a href="/tags/tools/" style="font-size: 12px;">tools</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2099/04/">April 2099</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2099/04/24/technology_website/">常用技术网站推荐</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/23/docker/podman-namaspace-error/">CentOS8使用podman常见错误解决</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/19/ansible/ansible_loop/">asible之-玩转各种循环</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/05/jenkins/jenkins_base/">jenkins之-pipeline基础知识</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/01/jenkins/jenkins_hello_world/">jenkins之-创建第一个pipeline</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 李欢欢(Robin H H Li)<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+      <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_828341'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/stat.php%3Fid%3D828341%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories/linux" class="mobile-nav-link">Linux</a>
+  
+    <a href="/categories/ansible" class="mobile-nav-link">Ansible</a>
+  
+    <a href="/categories/python" class="mobile-nav-link">Python</a>
+  
+    <a href="/categories/network" class="mobile-nav-link">Network</a>
+  
+    <a href="/categories/tools" class="mobile-nav-link">Tools</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = 'false' == true;
+    var verify = 'false' == true;
+    new Valine({
+        el: '.vcomment',
+        notify: notify,
+        verify: verify,
+        appId: "p2FrmVMxcfWemqnNtET5iplC-gzGzoHsz",
+        appKey: "95bACKJlEpr1YLgRGMeRKVIt",
+        placeholder: "Just go go",
+        pageSize:'10',
+        avatar:'mm',
+        lang:'zh-cn'
+    });
+</script>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  <title>Linux之程序管理 | 运维时刻</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Linux系统是一个多任务的开源操作系统，后台运行着很多的进程。今天我们来学习下进程相关的内容。">
+<meta name="keywords" content="progress">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux之程序管理">
+<meta property="og:url" content="/2020/03/24/linux/linux_program/index.html">
+<meta property="og:site_name" content="运维时刻">
+<meta property="og:description" content="Linux系统是一个多任务的开源操作系统，后台运行着很多的进程。今天我们来学习下进程相关的内容。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-07T16:18:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux之程序管理">
+<meta name="twitter:description" content="Linux系统是一个多任务的开源操作系统，后台运行着很多的进程。今天我们来学习下进程相关的内容。">
+  
+    <link rel="alternate" href="/atom.xml" title="运维时刻" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">运维时刻</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">时刻准备着救火</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories/linux">Linux</a>
+        
+          <a class="main-nav-link" href="/categories/ansible">Ansible</a>
+        
+          <a class="main-nav-link" href="/categories/python">Python</a>
+        
+          <a class="main-nav-link" href="/categories/network">Network</a>
+        
+          <a class="main-nav-link" href="/categories/tools">Tools</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value=""></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-linux/linux_program" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/03/24/linux/linux_program/" class="article-date">
+  <time class="dt-published" datetime="2020-03-24T23:00:00.000Z" itemprop="datePublished">2020-03-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Linux之程序管理
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Linux系统是一个多任务的开源操作系统，后台运行着很多的进程。今天我们来学习下进程相关的内容。<br><a id="more"></a></p>
+<h4 id="1-1-什么是进程"><a href="#1-1-什么是进程" class="headerlink" title="1.1 什么是进程"></a>1.1 什么是进程</h4><p>在linux系统中，触发任何一个事件时，系统都会将它定义为一个进程，并且给这个进程分配一个PID。</p>
+<h5 id="1-1-1-进程与程序"><a href="#1-1-1-进程与程序" class="headerlink" title="1.1.1 进程与程序"></a>1.1.1 进程与程序</h5><p>简单地说，执行一个程序、脚本或命令，就可以触发一个事件并且取得一个PID。在我看来就是内核读取磁盘中的一个程序，并且加载到内存中，给他分配一个进程号PID。总结下来，进程就是一个运行中的程序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">运行bash后会生成一个子shell，查看其产生的进程</span><br><span class="line">[root@aliyun-hk1 ~]# bash</span><br><span class="line">[root@aliyun-hk1 ~]# ps -l</span><br><span class="line">F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD</span><br><span class="line">4 S     0  3819  3817  0  80   0 - 28895 do_wai pts/0    00:00:00 bash</span><br><span class="line">4 S     0  3875  3819  0  80   0 - 26989 hrtime pts/0    00:00:00 sleep</span><br><span class="line">0 S     0  3881  3819  0  80   0 - 26989 hrtime pts/0    00:00:00 sleep</span><br><span class="line">4 S     0  3949  3819  0  80   0 - 28894 do_wai pts/0    00:00:00 bash</span><br><span class="line">0 R     0  3960  3949  0  80   0 - 38312 -      pts/0    00:00:00 ps</span><br></pre></td></tr></table></figure></p>
+<h5 id="1-1-2-工作管理（job-control"><a href="#1-1-2-工作管理（job-control" class="headerlink" title="1.1.2 工作管理（job control )"></a>1.1.2 工作管理（job control )</h5><p>将一个命令丢到后台去执行，即在命令末尾增加&amp;，就会产生一个job，包括job number，进程id等，这里的1是job号，3991是进程号。最开始的job状态是Running，后来执行结束后就自动变成了Done。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# jobs</span><br><span class="line">[root@aliyun-hk1 ~]# sleep 20 &amp;</span><br><span class="line">[1] 3991</span><br><span class="line">[root@aliyun-hk1 ~]# jobs</span><br><span class="line">[1]+  Running                 sleep 20 &amp;</span><br><span class="line">[root@aliyun-hk1 ~]# jobs</span><br><span class="line">[1]+  Done                    sleep 20</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure></p>
+<p>使用CTRL+Z，将目前的工作丢到后台去，所以就会产生一个job number。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# vim hello.js</span><br><span class="line">[1]+  Stopped                 vim hello.js</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br><span class="line">[root@aliyun-hk1 ~]# jobs</span><br><span class="line">[1]+  Stopped                 vim hello.js</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure></p>
+<p>使用jobs查看后前的后台工作状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# jobs</span><br><span class="line">[1]+  Stopped                 vim hello.js</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure></p>
+<p>使用fg将后台作业恢复到前台执行,继续执行刚才的文件编辑。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]#fg</span><br></pre></td></tr></table></figure></p>
+<p>使用bg将在后台而且已暂停执行的job成为运行状态。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# jobs</span><br><span class="line">[1]-  Stopped                 vim hello.js</span><br><span class="line">[2]   Running                 nohup sleep 20000 &amp;</span><br><span class="line">[3]+  Stopped                 sleep 100000</span><br><span class="line">[root@aliyun-hk1 ~]# bg 3</span><br><span class="line">[3]+ sleep 100000 &amp;</span><br><span class="line">[root@aliyun-hk1 ~]# jobs</span><br><span class="line">[1]+  Stopped                 vim hello.js</span><br><span class="line">[2]   Running                 nohup sleep 20000 &amp;</span><br><span class="line">[3]-  Running                 sleep 100000 &amp;</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure></p>
+<p>管理后台运行中的job：kill<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kill -signal job-number</span><br><span class="line">kill -9 job-number 强制删除一个job</span><br><span class="line">kill -15 以正常的程序方式终止一项工作</span><br><span class="line">kill -2 代表由键盘执行CTRL+C一样的操作</span><br></pre></td></tr></table></figure></p>
+<h5 id="1-1-3-进程管理"><a href="#1-1-3-进程管理" class="headerlink" title="1.1.3 进程管理"></a>1.1.3 进程管理</h5><p>学习和研究进程管理的意义其实很重大。在linux每个运行的程序，都会运行一个进程，这个程序是否还在运行需要看进程是否存在；如果linux系统的资源使用情况突然异常，需要快速找出这个可疑的进程；如果某个程序写得不好，导致有问题的进程存在，也需要找出他；如果有多个重要的用户级进程在系统运行，如果调整他们的优先级，也很重要。</p>
+<p><strong>进程基本信息查看，可以使用ps命令</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# ps -l  仅查看自己的bash相关进程</span><br><span class="line">F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD</span><br><span class="line">4 S     0  6931  6929  0  80   0 - 28895 do_wai pts/0    00:00:00 bash</span><br><span class="line">0 R     0  7000  6931  0  80   0 - 38312 -      pts/0    00:00:00 ps</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# ps aux 列出目前所有在内存中的进程</span><br><span class="line">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</span><br><span class="line">root         1  0.0  0.6  43532  3420 ?        Ss   Mar15   0:07 /usr/lib/systemd/systemd</span><br><span class="line">root         4  0.0  0.0      0     0 ?        S&lt;   Mar15   0:00 [kworker/0:0H]</span><br><span class="line">root         5  0.0  0.0      0     0 ?        S    Mar15   0:01 [kworker/u2:0]</span><br><span class="line">root         6  0.0  0.0      0     0 ?        S    Mar15   0:01 [ksoftirqd/0]</span><br><span class="line">root         7  0.0  0.0      0     0 ?        S    Mar15   0:00 [migration/0]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# ps axjf 查看进程并且包含进程树</span><br><span class="line">    1   838   838   838 ?           -1 Ssl      0   1:39 /usr/bin/python2 -Es /usr/sbin/tuned -l -P</span><br><span class="line"> 6931  7004  7003  6931 pts/0     7003 S+       0   0:00          \_ grep --color=auto python</span><br><span class="line">    1  1297  1296  1266 ?           -1 Sl       0   2:53 python proxyserver.py 11081</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure>
+<p><strong>进程动态信息查看，可以使用top命令</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">输入top后，默认系统就会列出所有进程的信息和整体资源的占用情况。</span><br><span class="line">top - 23:14:35 up 11 days, 12:39,  1 user,  load average: 0.00, 0.01, 0.05</span><br><span class="line">Tasks:  71 total,   1 running,  70 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.3 us,  0.3 sy,  0.0 ni, 99.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :   498664 total,    36480 free,    95232 used,   366952 buff/cache</span><br><span class="line">KiB Swap:        0 total,        0 free,        0 used.   389812 avail Mem</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND</span><br><span class="line">  975 root      10 -10  127960  10768   6216 S  1.3  2.2 146:08.95 AliYunDun</span><br><span class="line">    1 root      20   0   43532   3420   2104 S  0.0  0.7   0:07.60 systemd</span><br><span class="line">    2 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kthreadd</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">查看某个进程的负载，可以这样玩</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# top -d 2 -p 975 </span><br><span class="line">Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.5 us,  0.0 sy,  0.0 ni, 99.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :   498664 total,    36232 free,    95160 used,   367272 buff/cache</span><br><span class="line">KiB Swap:        0 total,        0 free,        0 used.   389892 avail Mem</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND</span><br><span class="line">  975 root      10 -10  127960  10768   6216 S  1.0  2.2 146:13.63 AliYunDun</span><br></pre></td></tr></table></figure>
+<p><em>top命令很强大，可以持续监测整个系统的工作状态，默认情况下5秒更新一次。这个命令今天暂时不展开讲了。</em></p>
+<p><strong>进程之间关系的查看</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# pstree</span><br><span class="line">systemd─┬─AliYunDun───23*[&#123;AliYunDun&#125;]</span><br><span class="line">        ├─AliYunDunUpdate───3*[&#123;AliYunDunUpdate&#125;]</span><br><span class="line">        ├─2*[agetty]</span><br><span class="line">        ├─aliyun-service───2*[&#123;aliyun-service&#125;]</span><br><span class="line">        ├─atd</span><br><span class="line">        ├─auditd───&#123;auditd&#125;</span><br><span class="line">        ├─chronyd</span><br><span class="line">        ├─crond</span><br><span class="line">        ├─dbus-daemon</span><br><span class="line">        ├─dhclient</span><br><span class="line">        ├─lvmetad</span><br><span class="line">        ├─nginx───nginx</span><br><span class="line">        ├─polkitd───6*[&#123;polkitd&#125;]</span><br><span class="line">        ├─python───13*[&#123;python&#125;]</span><br><span class="line">        ├─rsyslogd───2*[&#123;rsyslogd&#125;]</span><br><span class="line">        ├─sshd───sshd───bash───pstree</span><br><span class="line">        ├─systemd-journal</span><br><span class="line">        ├─systemd-logind</span><br><span class="line">        ├─systemd-udevd</span><br><span class="line">        └─tuned───4*[&#123;tuned&#125;]</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure></p>
+<p><strong>进程的管理和控制</strong><br>我们要控制某个进程，只要给他发信号就可以了，进程的唯一标识符就是进程ID。<br>通过进程PID来终止进程，语法为：kill -signal PID，例如: kill -9 12306<br>代号     | 含义<br>——– | —–<br>1  | 启动被终止的进程<br>2 | 相当于键盘输入CTRL+C来中断一个进程<br>9  |强制中断某一个进程<br>15|等待进程完成后续操作后，结束该进程<br>17|相当于用户键入CTRL+Z暂停一个进程的执行</p>
+<p>通过进程PID来终止进程，语法为：killall [command name]，例如：killall -9 httpd</p>
+<p><strong>进程的执行顺序</strong><br>Linux是多用户、多任务的环境，由top输出的结果我们也可以发现，系统同时间有非常多的进程运行中，只是绝大部分的进程都在休眠（sleep)状态而已。操作系统内核，有默认的调度规则，会自动计算出一个“优先执行序”（priority,PRI)，这个PRI值越低代表越优先，用户无法干预这个PRI。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[robin@aliyun-hk1 linux-shell-test]$ ps -alt</span><br><span class="line">F   UID   PID  PPID PRI  NI    VSZ   RSS WCHAN  STAT TTY        TIME COMMAND</span><br><span class="line">4     0   560     1  20   0 110108   824 n_tty_ Ss+  ttyS0      0:00 /sbin/agetty --keep-baud 115200,38400,9600 ttyS0 vt220</span><br><span class="line">4     0   561     1  20   0 110108   820 n_tty_ Ss+  tty1       0:00 /sbin/agetty --noclear tty1 linux</span><br><span class="line">4     0  8614  8612  20   0 115580  2084 do_wai Ss   pts/0      0:00 -bash</span><br><span class="line">4     0  8631  8614  20   0 191784  2340 do_wai S    pts/0      0:00 su - robin</span><br><span class="line">4  1000  8632  8631  20   0 115448  2096 do_wai S    pts/0      0:00 -bash</span><br><span class="line">0  1000  8675  8632  20   0 153248  1500 -      R+   pts/0      0:00 ps -alt</span><br><span class="line">[robin@aliyun-hk1 linux-shell-test]$</span><br></pre></td></tr></table></figure></p>
+<p>可以通过Nice来调整，也就是上面的NI，一般他们的关系如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PRI(new) = PRI(old) + nice</span><br></pre></td></tr></table></figure></p>
+<p>root可以随意调整自己或他人进程的nice值，调整的范围是-20~19；<br>一般用户可以调整的范围仅为0-19（为了避免抢占系统资源），而且只能调大，或者初次使用时设置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">新启动一个程序，并设置nice为-5</span><br><span class="line">[root@aliyun-hk1 ~]# nice -n -5 vi &amp;</span><br><span class="line">[1] 8699</span><br><span class="line">[root@aliyun-hk1 ~]# ps -l</span><br><span class="line">F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD</span><br><span class="line">4 S     0  8614  8612  0  80   0 - 28895 do_wai pts/0    00:00:00 bash</span><br><span class="line">4 T     0  8699  8614  0  75  -5 - 31055 do_sig pts/0    00:00:00 vi</span><br><span class="line">0 R     0  8700  8614  0  80   0 - 38312 -      pts/0    00:00:00 ps</span><br><span class="line"></span><br><span class="line">[1]+  Stopped                 nice -n -5 vi</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure></p>
+<p>调整现有进程的优先级，nice值重新调整<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# renice 10 8699</span><br><span class="line">8699 (process ID) old priority -5, new priority 10</span><br><span class="line">[root@aliyun-hk1 ~]# ps -l</span><br><span class="line">F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD</span><br><span class="line">4 S     0  8614  8612  0  90  10 - 28895 do_wai pts/0    00:00:00 bash</span><br><span class="line">4 T     0  8699  8614  0  90  10 - 31055 do_sig pts/0    00:00:00 vi</span><br><span class="line">0 R     0  8718  8614  0  90  10 - 38312 -      pts/0    00:00:00 ps</span><br><span class="line">[root@aliyun-hk1 ~]# renice 9 8699</span><br><span class="line">8699 (process ID) old priority 10, new priority 9</span><br><span class="line">[root@aliyun-hk1 ~]# ps -l</span><br><span class="line">F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD</span><br><span class="line">4 S     0  8614  8612  0  90  10 - 28895 do_wai pts/0    00:00:00 bash</span><br><span class="line">4 T     0  8699  8614  0  89   9 - 31055 do_sig pts/0    00:00:00 vi</span><br><span class="line">0 R     0  8720  8614  0  90  10 - 38312 -      pts/0    00:00:00 ps</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure></p>
+<p><em>因为一般用户只能调高nice，即降低优先级，所以我们一般通过调大nice降低非核心任务的优先级，保证核心业务运行的优先级。</em></p>
+<p><strong>系统资源查看</strong><br>除了系统进程管理外，我们还需要了解如何查询其他系统资源，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# free -m free 查看内存使用情况</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:            486          93          34           0         359         380</span><br><span class="line">Swap:             0           0           0</span><br></pre></td></tr></table></figure></p>
+<p><em>Linux系统管理内存的方式跟windows有很大差异，为了让用户的体验更好，系统性能更好，内核会尽可能使用现有的内存，所以如果内存几乎被用光，不要心慌。除非swap开始被大量使用， 才要开始警惕。</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# uname -a 内核基本信息查看</span><br><span class="line">Linux aliyun-hk1 3.10.0-1062.12.1.el7.x86_64 #1 SMP Tue Feb 4 23:02:59 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure>
+<p><em>内核基本信息主要包括，主机名、内核版本、创建日期、试用的硬件平台等。</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# uptime 查看系统启动时间及负载</span><br><span class="line"> 00:03:22 up 12 days, 13:28,  1 user,  load average: 0.00, 0.01, 0.05</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure>
+<p><em>启动时间就是系统已经开启或重启多久了，负载就是只1，5，15分钟的平均负载。</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# netstat -an 查看网络信息</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State</span><br><span class="line">tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:11081           0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 172.31.200.164:11081    47.103.99.182:53826     ESTABLISHED</span><br></pre></td></tr></table></figure>
+<p><em>一般我们最长去使用netstat去判断某个进程是否开启了xx监听端口。</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# dmesg |more 分析内核产生的信息</span><br><span class="line">[    0.000000]   0 base 000080000000 mask 3FFF80000000 uncachable</span><br><span class="line">[    0.000000]   1 disabled</span><br><span class="line">[    0.000000]   2 disabled</span><br><span class="line">[    0.000000]   3 disabled</span><br><span class="line">[    0.000000]   4 disabled</span><br><span class="line">[    0.000000]   5 disabled</span><br><span class="line">[    0.000000]   6 disabled</span><br><span class="line">[    0.000000]   7 disabled</span><br><span class="line">[    0.000000] PAT configuration [0-7]: WB  WC  UC- UC  WB  WP  UC- UC</span><br><span class="line">[    0.000000] found SMP MP-table at [mem 0x000f59f0-0x000f59ff] mapped at [ffffffffff2009f0]</span><br><span class="line">[    0.000000] Base memory trampoline at [ffff9bf500099000] 99000 size 24576</span><br><span class="line">[    0.000000] Using GB pages for direct mapping</span><br><span class="line">[    0.000000] BRK [0x0b270000, 0x0b270fff] PGTABLE</span><br><span class="line">[    0.000000] BRK [0x0b271000, 0x0b271fff] PGTABLE</span><br></pre></td></tr></table></figure>
+<p><strong>vmstat 检测系统资源变化，结合top分析系统瓶颈。</strong><br>他可以动态查看CPU/内存/磁盘/IO等数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 ~]# vmstat 查看一次数据</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 2  0      0  34064  67792 300812    0    0     1     2   31    4  0  0 99  0  0</span><br><span class="line">[root@aliyun-hk1 ~]# vmstat 3 每3秒动态输出一次</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 1  0      0  34064  67792 300812    0    0     1     2   31    4  0  0 99  0  0</span><br><span class="line"> 0  0      0  34064  67800 300812    0    0     0     5  267  875  0  0 99  0  0</span><br><span class="line">^C</span><br></pre></td></tr></table></figure></p>
+<h5 id="1-1-4-特殊文件与程序"><a href="#1-1-4-特殊文件与程序" class="headerlink" title="1.1.4 特殊文件与程序"></a>1.1.4 特殊文件与程序</h5><h6 id="1-1-4-1-具有SUID-SGID权限的命令执行状态"><a href="#1-1-4-1-具有SUID-SGID权限的命令执行状态" class="headerlink" title="1.1.4.1 具有SUID/SGID权限的命令执行状态"></a>1.1.4.1 具有SUID/SGID权限的命令执行状态</h6><p>普通用户用户都有权限通过passwd修改自己的密码，但是密码文件的权限是root，那为什么普通用户有权限读写呢？因为普通用户有passwd程序的特殊权限，他在运行passwd程序时，会自动取得一个新的进程与PID，且具有owner的权限，即具有读写权限。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">密码文件的默认权限644，也就是普通用户只可以去读。</span><br><span class="line">[robin@aliyun-hk1 ~]$ ls -alt /etc/passwd</span><br><span class="line">-rw-r--r-- 1 root root 1175 Mar 11 00:07 /etc/passwd</span><br><span class="line">[robin@aliyun-hk1 ~]$</span><br><span class="line"></span><br><span class="line">找到passwd程序，并看他的权限，他有SUID权限</span><br><span class="line">[robin@aliyun-hk1 ~]$ whereis passwd</span><br><span class="line">passwd: /usr/bin/passwd /etc/passwd /usr/share/man/man1/passwd.1.gz</span><br><span class="line">[robin@aliyun-hk1 ~]$ ls -alt /usr/bin/passwd</span><br><span class="line">-rwsr-xr-x 1 root root 27856 Aug  9  2019 /usr/bin/passwd</span><br><span class="line">[robin@aliyun-hk1 ~]$</span><br></pre></td></tr></table></figure></p>
+<h6 id="1-1-4-2-进程数据的查看"><a href="#1-1-4-2-进程数据的查看" class="headerlink" title="1.1.4.2 进程数据的查看"></a>1.1.4.2 进程数据的查看</h6><p>其实进程都是加载到内存中运行的，而内存中的数据又都是写入到/proc/*这个目录的。我们当然可以查看/proc/下面的数据。我们发现目前主机上运行的进程，都是以PID编号命名，存到这里的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[robin@aliyun-hk1 ~]$ ls -ltr /proc/</span><br><span class="line">total 0</span><br><span class="line">lrwxrwxrwx  1 root    root                  0 Mar 15 10:34 self -&gt; 10312</span><br><span class="line">-r--r--r--  1 root    root                  0 Mar 15 10:34 swaps</span><br><span class="line">dr-xr-xr-x  9 root    root                  0 Mar 15 10:34 342</span><br><span class="line">dr-xr-xr-x  9 root    root                  0 Mar 15 10:34 362</span><br><span class="line">dr-xr-xr-x  9 root    root                  0 Mar 15 10:34 363</span><br><span class="line">dr-xr-xr-x  9 root    root                  0 Mar 15 10:34 468</span><br><span class="line">dr-xr-xr-x  9 polkitd polkitd               0 Mar 15 10:34 492</span><br><span class="line">dr-xr-xr-x  9 root    root                  0 Mar 15 10:34 496</span><br><span class="line">dr-xr-xr-x  9 dbus    dbus                  0 Mar 15 10:34 503</span><br><span class="line">dr-xr-xr-x  9 chrony  chrony                0 Mar 15 10:34 510</span><br><span class="line"></span><br><span class="line">[robin@aliyun-hk1 ~]$ ps -ef|grep 342</span><br><span class="line">root       342     1  0 Mar15 ?        00:00:03 /usr/lib/systemd/systemd-journald</span><br><span class="line">robin    10314 10261  0 22:33 pts/1    00:00:00 grep --color=auto 342</span><br><span class="line">[robin@aliyun-hk1 ~]$</span><br></pre></td></tr></table></figure></p>
+<p>这个以PID编号命名的为文件夹里，有什么内容呢？这里面有好多内容，我们可以先了解下cmdline和environ，前者存储的是这个进程被启动的命令串，后者存储的是进程的环境变量。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[robin@aliyun-hk1 10319]$ ps -ef|grep sleep</span><br><span class="line">robin    10319 10261  0 22:34 pts/1    00:00:00 sleep 100000</span><br><span class="line">robin    10346 10261  0 22:39 pts/1    00:00:00 grep --color=auto sleep</span><br><span class="line">[robin@aliyun-hk1 10319]$ cd /proc/10319/</span><br><span class="line">[robin@aliyun-hk1 10319]$ ll</span><br><span class="line">total 0</span><br><span class="line">dr-xr-xr-x 2 robin robin 0 Mar 28 22:35 attr</span><br><span class="line">-rw-r--r-- 1 robin robin 0 Mar 28 22:35 autogroup</span><br><span class="line">-r-------- 1 robin robin 0 Mar 28 22:35 auxv</span><br><span class="line">-r--r--r-- 1 robin robin 0 Mar 28 22:34 cgroup</span><br><span class="line">--w------- 1 robin robin 0 Mar 28 22:35 clear_refs</span><br><span class="line">-r--r--r-- 1 robin robin 0 Mar 28 22:34 cmdline</span><br><span class="line">-rw-r--r-- 1 robin robin 0 Mar 28 22:35 comm</span><br><span class="line">-rw-r--r-- 1 robin robin 0 Mar 28 22:35 coredump_filter</span><br><span class="line">-r--r--r-- 1 robin robin 0 Mar 28 22:35 cpuset</span><br><span class="line">lrwxrwxrwx 1 robin robin 0 Mar 28 22:34 cwd -&gt; /proc/342</span><br><span class="line">-r-------- 1 robin robin 0 Mar 28 22:35 environ</span><br><span class="line">.....</span><br><span class="line"></span><br><span class="line">[robin@aliyun-hk1 10319]$ cat cmdline</span><br><span class="line">sleep100000[robin@aliyun-hk1 10319]$ cat environ</span><br><span class="line">XDG_SESSION_ID=2314HOSTNAME=aliyun-hk1TERM=xtermSHELL=/bin/bashHISTSIZE=1000SSH_CLIENT=</span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
+<p>Linux系统，常见/prod/下文件与对应的内容。<br>文件名     | 文件内容<br>——– | —–<br>/proc/cmdline | 加载kernel时所执行的相关参数<br>/proc/cpuinfo | 本机CPU相关的信息，例如频率、类型、数量<br>/proc/devices | 记录了系统各个主要设备的代号<br>/proc/filesystems| 目前系统上已加载的文件系统<br>/proc/loadavg|top uptime命令中负载的三个平均值就记录在这里<br>/proc/meminfo|查阅内存信息，相当于free的作用<br>/proc/mounts|    查阅系统已经挂载的数据，相当于mount<br>/proc/swaps|记录swap内容使用的文件系统<br>/proc/version|记录内核的版本</p>
+<h6 id="1-1-4-3-查询程序已打开的文件"><a href="#1-1-4-3-查询程序已打开的文件" class="headerlink" title="1.1.4.3 查询程序已打开的文件"></a>1.1.4.3 查询程序已打开的文件</h6><p>大家都应该遇到过，”too many open files…” 之类的错误吧? 这个其实跟打开文件数量超过系统限制有关系。<br><strong>使用fuser找出正在使用该文件的程序</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">不加参数，默认打印PID号</span><br><span class="line">[robin@aliyun-hk1 ~]$ fuser nohup.out</span><br><span class="line">/home/robin/nohup.out: 10319</span><br><span class="line">[robin@aliyun-hk1 ~]$ ps -ef|grep 10319</span><br><span class="line">robin    10319 10261  0 22:34 pts/1    00:00:00 sleep 100000</span><br><span class="line">robin    10380 10261  0 22:58 pts/1    00:00:00 grep --color=auto 10319</span><br><span class="line">[robin@aliyun-hk1 ~]$</span><br><span class="line"></span><br><span class="line">加参数可以获取更多的进程信息</span><br><span class="line">[robin@aliyun-hk1 ~]$ fuser -uv nohup.out</span><br><span class="line">                     USER        PID ACCESS COMMAND</span><br><span class="line">/home/robin/nohup.out:</span><br><span class="line">                     robin     10319 F.... (robin)sleep</span><br><span class="line">[robin@aliyun-hk1 ~]$</span><br></pre></td></tr></table></figure></p>
+<p><strong>使用lsof找出被进程打开的文件</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">找出robin用户下，被程序打开的所有文件</span><br><span class="line">[root@aliyun-hk1 ~]# lsof -u robin|wc -l</span><br><span class="line">108</span><br><span class="line">[root@aliyun-hk1 ~]#</span><br></pre></td></tr></table></figure></p>
+
+      
+      
+        <div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <br>
+            <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+            <span class="donate_txt">
+                <br>
+                如果喜欢我，可以请我喝咖啡哟!  也可以关注我的微信订阅号devops186
+            </span>
+    </div>  
+    <div id="donate_guide" class="donate_bar left hidden" >
+        <br>
+        <img src="/images/webchat.png" alt="微信打赏" height="100px" />
+        <!-- <img src="/images/alipay.png" alt="支付宝打赏" height="100px" /> -->
+    </div>
+    
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function() {
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+        function donate_on_web(){
+            $('#donate').submit();
+        }
+        var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                    original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+        }
+    </script>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="/2020/03/24/linux/linux_program/" data-id="ck9mxdet3003s0en7arrxk445" data-title="Linux之程序管理" class="article-share-link">Share</a>
+      
+      
+        <a href="/2020/03/24/linux/linux_program/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/2020/03/24/linux/linux_program/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/progress/">progress</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/03/29/linux/linux_performance/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Linux之系统性能优化
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/03/21/linux/linux_shell_output/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Linux之shell输出数据</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+  <section id="comments" class="vcomment">
+
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dev-ops/">dev-ops</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jenkins/">jenkins</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">other</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible/">ansible</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-error/">ansible-error</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-help/">ansible-help</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-learn/">ansible-learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-module/">ansible-module</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-playbook/">ansible-playbook</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-roles/">ansible-roles</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-template/">ansible-template</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-variables/">ansible-variables</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ci/">ci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloud/">cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dcoker/">dcoker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/delegate-to/">delegate_to</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/file/">file</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/https/">https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/include-vars/">include_vars</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/internet/">internet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipv6/">ipv6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/monitor/">monitor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nas/">nas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nat/">nat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/">other</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pip/">pip</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pipeline/">pipeline</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/podman/">podman</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/progress/">progress</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/standard/">standard</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ansible/" style="font-size: 16px;">ansible</a> <a href="/tags/ansible-error/" style="font-size: 10px;">ansible-error</a> <a href="/tags/ansible-help/" style="font-size: 10px;">ansible-help</a> <a href="/tags/ansible-learn/" style="font-size: 10px;">ansible-learn</a> <a href="/tags/ansible-module/" style="font-size: 18px;">ansible-module</a> <a href="/tags/ansible-playbook/" style="font-size: 12px;">ansible-playbook</a> <a href="/tags/ansible-roles/" style="font-size: 10px;">ansible-roles</a> <a href="/tags/ansible-template/" style="font-size: 10px;">ansible-template</a> <a href="/tags/ansible-variables/" style="font-size: 10px;">ansible-variables</a> <a href="/tags/ci/" style="font-size: 10px;">ci</a> <a href="/tags/cloud/" style="font-size: 10px;">cloud</a> <a href="/tags/dcoker/" style="font-size: 10px;">dcoker</a> <a href="/tags/delegate-to/" style="font-size: 10px;">delegate_to</a> <a href="/tags/file/" style="font-size: 12px;">file</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/include-vars/" style="font-size: 10px;">include_vars</a> <a href="/tags/internet/" style="font-size: 10px;">internet</a> <a href="/tags/ipv6/" style="font-size: 10px;">ipv6</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/learn/" style="font-size: 10px;">learn</a> <a href="/tags/linux/" style="font-size: 14px;">linux</a> <a href="/tags/monitor/" style="font-size: 10px;">monitor</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nas/" style="font-size: 10px;">nas</a> <a href="/tags/nat/" style="font-size: 10px;">nat</a> <a href="/tags/other/" style="font-size: 14px;">other</a> <a href="/tags/pip/" style="font-size: 10px;">pip</a> <a href="/tags/pipeline/" style="font-size: 10px;">pipeline</a> <a href="/tags/podman/" style="font-size: 10px;">podman</a> <a href="/tags/progress/" style="font-size: 10px;">progress</a> <a href="/tags/shell/" style="font-size: 20px;">shell</a> <a href="/tags/standard/" style="font-size: 10px;">standard</a> <a href="/tags/tools/" style="font-size: 12px;">tools</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2099/04/">April 2099</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2099/04/24/technology_website/">常用技术网站推荐</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/23/docker/podman-namaspace-error/">CentOS8使用podman常见错误解决</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/19/ansible/ansible_loop/">asible之-玩转各种循环</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/05/jenkins/jenkins_base/">jenkins之-pipeline基础知识</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/01/jenkins/jenkins_hello_world/">jenkins之-创建第一个pipeline</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 李欢欢(Robin H H Li)<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+      <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_828341'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/stat.php%3Fid%3D828341%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories/linux" class="mobile-nav-link">Linux</a>
+  
+    <a href="/categories/ansible" class="mobile-nav-link">Ansible</a>
+  
+    <a href="/categories/python" class="mobile-nav-link">Python</a>
+  
+    <a href="/categories/network" class="mobile-nav-link">Network</a>
+  
+    <a href="/categories/tools" class="mobile-nav-link">Tools</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = 'false' == true;
+    var verify = 'false' == true;
+    new Valine({
+        el: '.vcomment',
+        notify: notify,
+        verify: verify,
+        appId: "p2FrmVMxcfWemqnNtET5iplC-gzGzoHsz",
+        appKey: "95bACKJlEpr1YLgRGMeRKVIt",
+        placeholder: "Just go go",
+        pageSize:'10',
+        avatar:'mm',
+        lang:'zh-cn'
+    });
+</script>
+
+  </div>
+</body>
+</html>

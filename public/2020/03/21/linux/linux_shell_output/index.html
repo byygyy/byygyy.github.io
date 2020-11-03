@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  <title>Linux之shell输出数据 | 运维时刻</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="讲完了如何处理用户的输入，接下来我在讲讲对应的shell输出数据。">
+<meta name="keywords" content="shell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux之shell输出数据">
+<meta property="og:url" content="/2020/03/21/linux/linux_shell_output/index.html">
+<meta property="og:site_name" content="运维时刻">
+<meta property="og:description" content="讲完了如何处理用户的输入，接下来我在讲讲对应的shell输出数据。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-07T16:18:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux之shell输出数据">
+<meta name="twitter:description" content="讲完了如何处理用户的输入，接下来我在讲讲对应的shell输出数据。">
+  
+    <link rel="alternate" href="/atom.xml" title="运维时刻" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">运维时刻</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">时刻准备着救火</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories/linux">Linux</a>
+        
+          <a class="main-nav-link" href="/categories/ansible">Ansible</a>
+        
+          <a class="main-nav-link" href="/categories/python">Python</a>
+        
+          <a class="main-nav-link" href="/categories/network">Network</a>
+        
+          <a class="main-nav-link" href="/categories/tools">Tools</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value=""></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-linux/linux_shell_output" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/03/21/linux/linux_shell_output/" class="article-date">
+  <time class="dt-published" datetime="2020-03-21T23:00:00.000Z" itemprop="datePublished">2020-03-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Linux之shell输出数据
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>讲完了如何处理用户的输入，接下来我在讲讲对应的shell输出数据。<br><a id="more"></a></p>
+<h4 id="1-1-理解输入和输出"><a href="#1-1-理解输入和输出" class="headerlink" title="1.1 理解输入和输出"></a>1.1 理解输入和输出</h4><p>至此你应该已经知道两种显示脚本输出的方式，在屏幕上显示输出或将输出重定向到文件。这两种方式，要么什么都显示出来，要么都不显示。但有时需要将一部分显示到频幕上，另一部分保存到文件。学习了如何处理输入输出后，就能帮助你将脚本输出放到正确的位置。</p>
+<h5 id="1-1-1-标准文件描述符"><a href="#1-1-1-标准文件描述符" class="headerlink" title="1.1.1 标准文件描述符"></a>1.1.1 标准文件描述符</h5><p>linux系统将每个对象都当作文件处理，这包括输入和输出的进程。Linux系统本来支持9中文件描述符，出于特殊目的，bash shell只保留了前3个文件描述符(0,1,2)。<br>文件描述符      | 缩写  |描述 |对应位置<br>————–  | —– |—–|—-<br>0  | STDIN      |标准输入|键盘<br>1  | STDOUT     |标准输出|屏幕<br>2  | STDERR     |标准错误|屏幕<br><em>这三个特殊文件描述符会处理脚本的输入和输出。shell用他们将shell默认的输入和输出导向响应的位置。</em></p>
+<h4 id="1-2-交互式shell输出重新向"><a href="#1-2-交互式shell输出重新向" class="headerlink" title="1.2 交互式shell输出重新向"></a>1.2 交互式shell输出重新向</h4><p>输出重定向，主要是将STDOUT和STDERR的数据重新指向到非默认的位置，下来来几个示例。使用2&gt;将标准错误输出写入到一个文件，使用1&gt;将标准输出写入到另外一个文件。</p>
+<h5 id="1-2-1-将STDERR重定向到一个文件"><a href="#1-2-1-将STDERR重定向到一个文件" class="headerlink" title="1.2.1 将STDERR重定向到一个文件"></a>1.2.1 将STDERR重定向到一个文件</h5><p>这个时候如果有标准输出，则会显示在屏幕上。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# ls hello 2&gt; hello.log</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat hello.log</span><br><span class="line">ls: cannot access hello: No such file or directory</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ls rs1.out hello  2&gt; rss1.log</span><br><span class="line">rs1.out</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat rss1.log</span><br><span class="line">ls: cannot access hello: No such file or directory</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#​</span><br></pre></td></tr></table></figure></p>
+<h5 id="1-2-2-将STDERR和STDOUT的分别重定向到不同的文件"><a href="#1-2-2-将STDERR和STDOUT的分别重定向到不同的文件" class="headerlink" title="1.2.2 将STDERR和STDOUT的分别重定向到不同的文件"></a>1.2.2 将STDERR和STDOUT的分别重定向到不同的文件</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# ls rs1.out hello 2&gt;hello.log 1&gt;rs1.log</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat hello.log</span><br><span class="line">ls: cannot access hello: No such file or directory</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat rs1.log</span><br><span class="line">rs1.out</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure>
+<h5 id="1-2-3-将STDERR和STDOUT的重定向到同一个文件"><a href="#1-2-3-将STDERR和STDOUT的重定向到同一个文件" class="headerlink" title="1.2.3 将STDERR和STDOUT的重定向到同一个文件"></a>1.2.3 将STDERR和STDOUT的重定向到同一个文件</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# ls rs1.out hello  &amp;&gt; rss1.log</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat rss1.log</span><br><span class="line">ls: cannot access hello: No such file or directory</span><br><span class="line">rs1.out</span><br></pre></td></tr></table></figure>
+<h4 id="1-3-shell脚本输出重定向"><a href="#1-3-shell脚本输出重定向" class="headerlink" title="1.3 shell脚本输出重定向"></a>1.3 shell脚本输出重定向</h4><p>默认情况下，shell脚本运行的时候，Linux会将STDERR导向STDOUT，而且会显示在屏幕上。如果运行时重定向了STDERR，脚本中的所有导入STDERR的文本都会被重定向。</p>
+<h5 id="1-3-1-临时重定向"><a href="#1-3-1-临时重定向" class="headerlink" title="1.3.1 临时重定向"></a>1.3.1 临时重定向</h5><p>运行shell脚本时通过传入参数的方式实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# cat shell-output.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">echo &quot;this is a error&quot; &gt;&amp;2</span><br><span class="line">echo &quot;this is a normail output&quot;</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ./shell-output.sh</span><br><span class="line">this is a error</span><br><span class="line">this is a normail output</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ./shell-output.sh 2&gt; test9</span><br><span class="line">this is a normail output</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat test9</span><br><span class="line">this is a error</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+<p><em>脚本内部临时在需要的位置定义一个标准错误输出，外部调用这个shell脚本的时候，直接使用交互式重定向符号。</em></p>
+<h5 id="1-3-2-永久重定向"><a href="#1-3-2-永久重定向" class="headerlink" title="1.3.2 永久重定向"></a>1.3.2 永久重定向</h5><p>在shell脚本内部直接实现，可以使用exec命令告诉shell在脚本执行期间重定向某个特定文件描述符。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# cat shell-output.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">exec 1&gt;test_stdout</span><br><span class="line">exec 2&gt;test_stderr</span><br><span class="line">echo &quot;this is a normail output&quot;</span><br><span class="line">ls testt</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ./shell-output.sh</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat test_stdout</span><br><span class="line">this is a normail output</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat test_stderr</span><br><span class="line">ls: cannot access testt: No such file or directory</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+<p><em>标准输出被重定向到了test_stdout,标准错误输出重定向到了test_stderr</em></p>
+<h4 id="1-4-shell脚本输入重定向"><a href="#1-4-shell脚本输入重定向" class="headerlink" title="1.4 shell脚本输入重定向"></a>1.4 shell脚本输入重定向</h4><p>正常情况下，shell脚本会从键盘接收STDINT，通俗地说键盘输入内容会直接到标准输入。如果我们使用了输入重定向后，就会告诉shell不从键盘接收标准输入，而是从文件或者其他地方接收输入。这种操作，其实是Linux系统管理员的一项日常任务，例如从日志中读取数据并处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# cat shell-input.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line">#read input from file testfile</span><br><span class="line">exec 0&lt; testfile</span><br><span class="line">count=1</span><br><span class="line"></span><br><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">  echo &quot;Line number $count is $line&quot;</span><br><span class="line">  count=$[ $count + 1]</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ./shell-input.sh</span><br><span class="line">Line number 1 is hello</span><br><span class="line">Line number 2 is world</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat testfile</span><br><span class="line">hello</span><br><span class="line">world</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+<h4 id="1-5-shell脚本非标准重定向"><a href="#1-5-shell脚本非标准重定向" class="headerlink" title="1.5 shell脚本非标准重定向"></a>1.5 shell脚本非标准重定向</h4><p>Linux系统本来支持9中文件描述符，出于特殊目的，bash shell只保留了前3个文件描述符(0,1,2)。我们这里来讲讲如何定义并使用3-8的文件描述符，这个需求有时候可能很迫切，例如程序调试期间。</p>
+<h5 id="1-5-1-创建输出文件描述符"><a href="#1-5-1-创建输出文件描述符" class="headerlink" title="1.5.1 创建输出文件描述符"></a>1.5.1 创建输出文件描述符</h5><p>使用exec命令来给输出分配非标准的描述符，然后在后面重定向某些输出到这个文件描述符即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# cat shell-output1.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">exec 3&gt;test3out</span><br><span class="line"></span><br><span class="line">echo &quot;this is a normail output&quot;</span><br><span class="line">echo &quot;this is should been to the file&quot; &gt;&amp;3</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ./shell-output1.sh</span><br><span class="line">this is a normail output</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat test3out</span><br><span class="line">this is should been to the file</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+<h5 id="1-5-2-重定向文件描述符"><a href="#1-5-2-重定向文件描述符" class="headerlink" title="1.5.2 重定向文件描述符"></a>1.5.2 重定向文件描述符</h5><p>可能由于业务需求，需要将非标准的文件描述符重定向到标准文件描述符。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# cat shell-output2.sh</span><br><span class="line">#!/bin/bash                                             </span><br><span class="line">                                                        </span><br><span class="line">exec 3&gt;&amp;1                                               </span><br><span class="line">exec 1&gt;test4out                                         </span><br><span class="line">                                                        </span><br><span class="line">echo &quot;this is should been to the file&quot; &gt;&amp;3              </span><br><span class="line">echo &quot;this is a normail output&quot;                         </span><br><span class="line">                                                        </span><br><span class="line">exec 1&gt;&amp;3                                               </span><br><span class="line">echo &quot;this is from 1&quot;                                   </span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ./shell-output2.sh  </span><br><span class="line">this is should been to the file                         </span><br><span class="line">this is from 1                                          </span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat test4out        </span><br><span class="line">this is a normail output                                </span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+<p><em>第一个exec将文件描述符3重定向到了文件描述符1，但是文件描述符1的默认输出位置是屏幕。第二个exec将文件描述符1重定向到文件，所以文件描述符1的内容就不会在显示屏上打印了，但是文件描述符3仍然指向文件描述符1原来的位置，也就是显示器。第三个exec又将文件描述符1重定向到文件描述符3，即也是输出到屏幕。每种文件描述符本身可以重定向，重定向以后一直有效，除非再次重定向。</em></p>
+<p>重定向文件描述符，除了在shell脚本内部可以实现，在shell脚本运行的时候，也可以通过参数方式修改。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# cat shell-output3.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">echo &quot;this is should been to the file&quot; &gt;&amp;3</span><br><span class="line">echo &quot;this is should been to the file2&quot; &gt;&amp;2</span><br><span class="line">echo &quot;this is a normail output&quot;</span><br><span class="line"></span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ./shell-output3.sh 3&gt;&amp;1 2&gt;&amp;1</span><br><span class="line">this is should been to the file</span><br><span class="line">this is should been to the file2</span><br><span class="line">this is a normail output</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ./shell-output3.sh 3&gt;&amp;1&gt;&gt;shellout10 2&gt;&amp;1&gt;shellout10</span><br><span class="line">this is should been to the file</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat shellout10</span><br><span class="line">this is a normail output</span><br><span class="line">e file2</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+<p><em>这样的参数，只是修改了文件描述符3和文件描述符2的输出方式，文件描述符1的输出方式继续保持。</em></p>
+<h5 id="1-5-3-创建输入文件描述符"><a href="#1-5-3-创建输入文件描述符" class="headerlink" title="1.5.3 创建输入文件描述符"></a>1.5.3 创建输入文件描述符</h5><p>我们可以用和重定向输出文件描述符同样的办法，重新向输入文件描述符。重定向之前，可以先将STDIN文件描述符保存到另外一个自定义的文件描述符，然后在读完文件后再将STDIN恢复到它原来的位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# cat shell-input.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line">#read input from file testfile</span><br><span class="line"></span><br><span class="line">exec 6&lt;&amp;0</span><br><span class="line">exec 0&lt;testfile</span><br><span class="line"></span><br><span class="line">count=1</span><br><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">  echo &quot;line $count is $line&quot;</span><br><span class="line">  count=$[ $count + 1 ]</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">exec 0&lt;&amp;6</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat testfile</span><br><span class="line">hello</span><br><span class="line">world</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# ./shell-input.sh</span><br><span class="line">line 1 is hello</span><br><span class="line">line 2 is world</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure>
+<h4 id="1-6-阻止命令输出"><a href="#1-6-阻止命令输出" class="headerlink" title="1.6 阻止命令输出"></a>1.6 阻止命令输出</h4><p>有时候可能不想显示脚本的任何输出，可以将STDERR重定向到一个叫做/dev/null的文件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# ls -alt &gt; /dev/null</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat /dev/null</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+<p>有时候想快速清空一个很大的日志文件，可以在输出重定向中，将/dev/null以覆盖的方式输出到某个文件，由于/dev/null是空的，所以文件会被清空。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# cat testfile</span><br><span class="line">hello</span><br><span class="line">world</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat /dev/null &gt; testfile</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat testfile</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+<p>更加简单快速清空文件的办法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@aliyun-hk1 linux-shell-test]# cat testfile</span><br><span class="line">hello</span><br><span class="line">world</span><br><span class="line">nihao</span><br><span class="line">zhongguo</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# &gt;testfile</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat testfile</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+<h4 id="1-7-使用tee命令同时多出输出"><a href="#1-7-使用tee命令同时多出输出" class="headerlink" title="1.7 使用tee命令同时多出输出"></a>1.7 使用tee命令同时多出输出</h4><p>有时候你想在显示器显示log，也想让文件保存下，你不用将输出重定向两次，只要使用特殊的命令tee即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">默认是覆盖写入文件</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# date| tee testfile</span><br><span class="line">Mon Mar 23 23:42:53 CST 2020</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat testfile</span><br><span class="line">Mon Mar 23 23:42:53 CST 2020</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br><span class="line"></span><br><span class="line">使用非默认的追加写入</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# date| tee -a testfile</span><br><span class="line">Mon Mar 23 23:43:51 CST 2020</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]# cat testfile</span><br><span class="line">Mon Mar 23 23:42:53 CST 2020</span><br><span class="line">Mon Mar 23 23:43:51 CST 2020</span><br><span class="line">[root@aliyun-hk1 linux-shell-test]#</span><br></pre></td></tr></table></figure></p>
+
+      
+      
+        <div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <br>
+            <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+            <span class="donate_txt">
+                <br>
+                如果喜欢我，可以请我喝咖啡哟!  也可以关注我的微信订阅号devops186
+            </span>
+    </div>  
+    <div id="donate_guide" class="donate_bar left hidden" >
+        <br>
+        <img src="/images/webchat.png" alt="微信打赏" height="100px" />
+        <!-- <img src="/images/alipay.png" alt="支付宝打赏" height="100px" /> -->
+    </div>
+    
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function() {
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+        function donate_on_web(){
+            $('#donate').submit();
+        }
+        var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                    original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+        }
+    </script>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="/2020/03/21/linux/linux_shell_output/" data-id="ck9mxdetg004c0en7iwtua6ty" data-title="Linux之shell输出数据" class="article-share-link">Share</a>
+      
+      
+        <a href="/2020/03/21/linux/linux_shell_output/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/2020/03/21/linux/linux_shell_output/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/03/24/linux/linux_program/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Linux之程序管理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/03/19/linux/linux_shell_input/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Linux之shell用户输入</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+  <section id="comments" class="vcomment">
+
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dev-ops/">dev-ops</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jenkins/">jenkins</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">other</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible/">ansible</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-error/">ansible-error</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-help/">ansible-help</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-learn/">ansible-learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-module/">ansible-module</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-playbook/">ansible-playbook</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-roles/">ansible-roles</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-template/">ansible-template</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ansible-variables/">ansible-variables</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ci/">ci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloud/">cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dcoker/">dcoker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/delegate-to/">delegate_to</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/file/">file</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/https/">https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/include-vars/">include_vars</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/internet/">internet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipv6/">ipv6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/monitor/">monitor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nas/">nas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nat/">nat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/">other</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pip/">pip</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pipeline/">pipeline</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/podman/">podman</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/progress/">progress</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/standard/">standard</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ansible/" style="font-size: 16px;">ansible</a> <a href="/tags/ansible-error/" style="font-size: 10px;">ansible-error</a> <a href="/tags/ansible-help/" style="font-size: 10px;">ansible-help</a> <a href="/tags/ansible-learn/" style="font-size: 10px;">ansible-learn</a> <a href="/tags/ansible-module/" style="font-size: 18px;">ansible-module</a> <a href="/tags/ansible-playbook/" style="font-size: 12px;">ansible-playbook</a> <a href="/tags/ansible-roles/" style="font-size: 10px;">ansible-roles</a> <a href="/tags/ansible-template/" style="font-size: 10px;">ansible-template</a> <a href="/tags/ansible-variables/" style="font-size: 10px;">ansible-variables</a> <a href="/tags/ci/" style="font-size: 10px;">ci</a> <a href="/tags/cloud/" style="font-size: 10px;">cloud</a> <a href="/tags/dcoker/" style="font-size: 10px;">dcoker</a> <a href="/tags/delegate-to/" style="font-size: 10px;">delegate_to</a> <a href="/tags/file/" style="font-size: 12px;">file</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/include-vars/" style="font-size: 10px;">include_vars</a> <a href="/tags/internet/" style="font-size: 10px;">internet</a> <a href="/tags/ipv6/" style="font-size: 10px;">ipv6</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/learn/" style="font-size: 10px;">learn</a> <a href="/tags/linux/" style="font-size: 14px;">linux</a> <a href="/tags/monitor/" style="font-size: 10px;">monitor</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nas/" style="font-size: 10px;">nas</a> <a href="/tags/nat/" style="font-size: 10px;">nat</a> <a href="/tags/other/" style="font-size: 14px;">other</a> <a href="/tags/pip/" style="font-size: 10px;">pip</a> <a href="/tags/pipeline/" style="font-size: 10px;">pipeline</a> <a href="/tags/podman/" style="font-size: 10px;">podman</a> <a href="/tags/progress/" style="font-size: 10px;">progress</a> <a href="/tags/shell/" style="font-size: 20px;">shell</a> <a href="/tags/standard/" style="font-size: 10px;">standard</a> <a href="/tags/tools/" style="font-size: 12px;">tools</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2099/04/">April 2099</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2099/04/24/technology_website/">常用技术网站推荐</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/23/docker/podman-namaspace-error/">CentOS8使用podman常见错误解决</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/19/ansible/ansible_loop/">asible之-玩转各种循环</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/05/jenkins/jenkins_base/">jenkins之-pipeline基础知识</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/01/jenkins/jenkins_hello_world/">jenkins之-创建第一个pipeline</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 李欢欢(Robin H H Li)<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+      <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_828341'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/stat.php%3Fid%3D828341%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories/linux" class="mobile-nav-link">Linux</a>
+  
+    <a href="/categories/ansible" class="mobile-nav-link">Ansible</a>
+  
+    <a href="/categories/python" class="mobile-nav-link">Python</a>
+  
+    <a href="/categories/network" class="mobile-nav-link">Network</a>
+  
+    <a href="/categories/tools" class="mobile-nav-link">Tools</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = 'false' == true;
+    var verify = 'false' == true;
+    new Valine({
+        el: '.vcomment',
+        notify: notify,
+        verify: verify,
+        appId: "p2FrmVMxcfWemqnNtET5iplC-gzGzoHsz",
+        appKey: "95bACKJlEpr1YLgRGMeRKVIt",
+        placeholder: "Just go go",
+        pageSize:'10',
+        avatar:'mm',
+        lang:'zh-cn'
+    });
+</script>
+
+  </div>
+</body>
+</html>
